@@ -8,10 +8,16 @@ public class PauseMenu : MonoBehaviour
     public static bool GameIsPaused = false;
     public GameObject pauseMenuUI;
     public string menuScene;
+    private PlayerCollision playerCollision;
+
+    private void Start()
+    {
+        playerCollision = FindObjectOfType<PlayerCollision>();
+    }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !playerCollision.playerHasDied)
         {
             if (GameIsPaused)
             {
