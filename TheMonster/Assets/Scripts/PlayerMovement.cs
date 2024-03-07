@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -11,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     private float fallMultiplier = 2.5f;
     private float lowJumpMultiplier = 2f;
     private float glideMultiplier = -2f; // Adjust as needed
+    private int tokenCount = 0; // Total collected tokens
     private bool isFacingRight = true;
 
     [SerializeField] private Rigidbody2D rb;
@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask gl;
     [SerializeField] private float wallCheckDistance = 0.2f; // Distance to check for walls
     [SerializeField] private LayerMask wallLayer; // Layer for walls
+    [SerializeField] private TextMeshProUGUI tokenText; // Reference to the TextMeshPro UI text for displaying the token count
 
     private const float groundCheckRadius = 0.2f;
     private const float groundCheckOffset = 0.05f;
@@ -105,6 +106,8 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
+
+        UpdateTokenText();
     }
 
     private void FixedUpdate()
@@ -149,10 +152,28 @@ public class PlayerMovement : MonoBehaviour
         return hit.collider != null;
     }
 
+    public int GetTokenCount()
+    {
+        return tokenCount;
+    }
+
     private bool IsTouchingWall()
     {
         RaycastHit2D hitRight = Physics2D.Raycast(tr.position, Vector2.right * (isFacingRight ? 1 : -1), wallCheckDistance, wallLayer);
         RaycastHit2D hitLeft = Physics2D.Raycast(tr.position, Vector2.left * (isFacingRight ? 1 : -1), wallCheckDistance, wallLayer);
         return hitRight.collider != null || hitLeft.collider != null;
+    }
+
+    private void UpdateTokenText()
+    {
+        if (tokenText != null)
+        {
+            tokenText.text = "Tokens: " + tokenCount.ToString(); // Update the UI text to display the token count
+        }
+    }
+
+    public void CollectToken(int value)
+    {
+        tokenCount += value;
     }
 }
